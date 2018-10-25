@@ -22,7 +22,7 @@ $freeSpaceFileName = "E:\users\joe\desktop\FreeSpace.htm"
  
 New-Item -ItemType file $freeSpaceFileName -Force 
 # Getting the freespace info using WMI 
-#Get-WmiObject win32_logicaldisk  | Where-Object {$_.drivetype -eq 3 -OR $_.drivetype -eq 2 } | format-table DeviceID, VolumeName,status,Size,FreeSpace | Out-File FreeSpace.txt 
+# Get-WmiObject win32_logicaldisk  | Where-Object {$_.drivetype -eq 3 -OR $_.drivetype -eq 2 } | format-table DeviceID, VolumeName,status,Size,FreeSpace | Out-File FreeSpace.txt 
 # Function to write the HTML Header to the file 
 Function writeHtmlHeader 
 { 
@@ -191,3 +191,24 @@ writeDiskInfo $freeSpaceFileName $server $DeviceID  $Volume $TotalSizeGB  $UsedS
 } 
 Add-Content $freeSpaceFileName "</table>"  
 writeHtmlFooter $freeSpaceFileName 
+
+
+$EmailSplat = @{
+To = 'cts@co.skamania.wa.us'
+From = 'support@co.skamania.wa.us'
+SmtpServer = 'co-skamania-wa-us.mail.protection.outlook.com'
+Attachments = 'E:\users\joe\desktop\freespace.htm'
+Subject = 'Disk Space Report'
+
+}
+Send-MailMessage @EmailSplat
+
+$TicketSplat = @{
+To = 'support@co.skamania.wa.us'
+From = 'support@co.skamania.wa.us'
+SmtpServer = 'co-skamania-wa-us.mail.protection.outlook.com'
+#Attachments = 'E:\users\joe\desktop\freespace.htm'
+Subject = 'Low Disk Space on' + $server
+
+}
+Send-MailMessage @TicketSplat
